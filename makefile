@@ -3,7 +3,7 @@ AR = ar rcu
 RANLIB = ranlib
 RM = rm -f
 
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -ansi -pedantic -DHAVE_STRDUP
 
 N = hash
 C = $N.c
