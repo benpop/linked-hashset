@@ -12,7 +12,7 @@
 
 #define HASH_MASK(tab) ((tab)->cap-1)
 #define HASH_MOD(tab,hash) (HASH_MASK(tab) & (hash))
-#define HASH_BUCKET(tab,pos) (&(tab)->buckets[(pos)])
+#define HASH_BUCKET(tab,hash) (&(tab)->buckets[HASH_MOD(tab, hash)])
 
 #define HASH_INTERN_FREE(ptr) free((void *)(ptr))
 
@@ -164,11 +164,10 @@ static Elt *elt_new (HashSet *H, const char *item, hash_t hash, Elt *next) {
 
 int hashset_add (HashSet *H, const char *item) {
   Elt **bucket, *e;
-  hash_t itemHash, pos;
+  hash_t itemHash;
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
-  pos = HASH_MOD(H, itemHash);
-  bucket = HASH_BUCKET(H, pos);
+  bucket = HASH_BUCKET(H, itemHash);
   for (e = *bucket; e != NULL; e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       return H_EXISTS;
@@ -182,11 +181,10 @@ int hashset_add (HashSet *H, const char *item) {
 
 int hashset_test (HashSet *H, const char *item) {
   Elt *e;
-  hash_t itemHash, pos;
+  hash_t itemHash;
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
-  pos = HASH_MOD(H, itemHash);
-  e = *HASH_BUCKET(H, pos);
+  e = *HASH_BUCKET(H, itemHash);
   for ( ; e != NULL; e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       return H_OK;
@@ -196,11 +194,10 @@ int hashset_test (HashSet *H, const char *item) {
 
 int hashset_del (HashSet *H, const char *item) {
   Elt **bucket, *e, *p;
-  hash_t itemHash, pos;
+  hash_t itemHash;
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
-  pos = HASH_MOD(H, itemHash);
-  bucket = HASH_BUCKET(H, pos);
+  bucket = HASH_BUCKET(H, itemHash);
   for (e = *bucket; e != NULL; p = e, e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       goto _del_;
