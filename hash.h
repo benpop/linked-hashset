@@ -21,8 +21,10 @@ typedef void (*DestroyFunc) (const char *item, void *ud);
 typedef struct HashSet HashSet;
 
 /*
-Duplicate strings added and hold them internally.
+STATIC: Store the pointer assuming the memory will always be available.
+INTERN: Duplicate strings added and hold them internally.
 */
+#define HASH_STATIC ((DestroyFunc)0)
 #define HASH_INTERN ((DestroyFunc)-1)
 /*#define HASH_NOCASE ((EqualFunc)-1)*/
 
