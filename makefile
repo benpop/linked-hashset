@@ -13,6 +13,9 @@ A = lib$N.a
 
 all: $A
 
+test: test.c $A
+	$(CC) $(CFLAGS) -o $@ $< -I. -L. -l$N
+
 clean:
 	$(RM) $O $A
 
