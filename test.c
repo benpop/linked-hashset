@@ -7,7 +7,7 @@
 static int results (int *pxrc, int rc, const char *key, const char *cmd) {
   if (rc != H_OK) {
     *pxrc = rc;
-    fprintf(stderr, "%s: %s %s\n", hashset_strcode(rc), cmd, key);
+    fprintf(stderr, "%s: %s %s\n", hashset_strcode(rc, 0), cmd, key);
   }
   return rc;
 }

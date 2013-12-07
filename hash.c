@@ -33,6 +33,24 @@ struct HashSet {
   Elt **buckets;
 };
 
+static const char * const HCodeShortMsgs[] = {
+  "ok", "not found", "exists", "error", "abort",
+  "invalid", "out of memory",
+  NULL
+};
+
+static const char * const HCodeLongMsgs[] = {
+  "ok", "item not found", "item exists", "error", "aborted by caller",
+  "invalid argument(s)", "out of memory",
+  NULL
+};
+
+const char *hashset_strcode (int rc, int longMsg) {
+  if (rc >= 0 && rc < NRETURNCODES)
+    return (longMsg ? HCodeLongMsgs : HCodeShortMsgs)[rc];
+  else return NULL;
+}
+
 /*
 http://en.wikipedia.org/wiki/Jenkins_hash_function
 */
