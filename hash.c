@@ -247,7 +247,6 @@ int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
   hash_t i, t = 0;
   if (H == NULL || pSize == NULL || pTbl == NULL)
     return H_INVALID;
-  /* if (H->cap == 0) { *pSize = 0; return H_OK; } */
   if (*pSize < H->cap) {
     tbl = malloc(H->cap * sizeof *tbl);
     if (tbl == NULL) return H_NOMEM;
