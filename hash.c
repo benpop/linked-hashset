@@ -12,8 +12,8 @@
 
 #define HASH_MASK(tab) ((tab)->cap-1)
 #define HASH_MOD(tab,hash) (HASH_MASK(tab) & (hash))
-#define HASH_BUCKET(tab,idx) ((tab)->buckets[(idx)])
-#define HASH_LOOKUP(tab,hash) HASH_BUCKET((tab),HASH_MOD((tab),(hash)))
+#define HASH_GET(tab,idx) ((tab)->buckets[(idx)])
+#define HASH_LOOKUP(tab,hash) HASH_GET((tab),HASH_MOD((tab),(hash)))
 
 #define HASH_INTERN_FREE(ptr) free((void *)(ptr))
 
@@ -120,7 +120,7 @@ void hashset_destroy (HashSet *H) {
     hash_t i;
     for (i = 0; i < H->cap; i++) {
       Elt *p = NULL;  /* parent */
-      Elt *e = HASH_BUCKET(H, i);
+      Elt *e = HASH_GET(H, i);
       for ( ; e; p = e, e = e->next) {
         if (H->destroyFunc) {
           if (H->destroyFunc == HASH_INTERN)
@@ -258,7 +258,7 @@ int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
     if (tbl == NULL) return H_NOMEM;
   }
   for (i = 0; i < H->cap; i++) {
-    Elt *e = HASH_BUCKET(H, i);
+    Elt *e = HASH_GET(H, i);
     int n = 0;
     for ( ; e; e = e->next) n++;
     tbl[t++] = n;
