@@ -12,7 +12,7 @@
 
 #define HASH_MASK(tab) ((tab)->cap-1)
 #define HASH_MOD(tab,hash) (HASH_MASK(tab) & (hash))
-#define HASH_BUCKET(tab,idx) (&(tab)->buckets[(idx)])
+#define HASH_BUCKET(tab,idx) ((tab)->buckets[(idx)])
 #define HASH_LOOKUP(tab,hash) HASH_BUCKET((tab),HASH_MOD((tab),(hash)))
 
 #define HASH_INTERN_FREE(ptr) free((void *)(ptr))
@@ -120,7 +120,7 @@ void hashset_destroy (HashSet *H) {
     hash_t i;
     for (i = 0; i < H->cap; i++) {
       Elt *p = NULL;  /* parent */
-      Elt *e = *HASH_BUCKET(H, i);
+      Elt *e = HASH_BUCKET(H, i);
       for ( ; e; p = e, e = e->next) {
         if (H->destroyFunc) {
           if (H->destroyFunc == HASH_INTERN)
@@ -186,7 +186,7 @@ int hashset_add (HashSet *H, const char *item) {
   hash_t itemHash;
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
-  bucket = HASH_LOOKUP(H, itemHash);
+  bucket = &HASH_LOOKUP(H, itemHash);
   for (e = *bucket; e; e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       return H_EXISTS;
@@ -207,7 +207,7 @@ int hashset_test (HashSet *H, const char *item) {
   hash_t itemHash;
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
-  e = *HASH_LOOKUP(H, itemHash);
+  e = HASH_LOOKUP(H, itemHash);
   for ( ; e; e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       return H_OK;
@@ -220,7 +220,7 @@ int hashset_del (HashSet *H, const char *item) {
   hash_t itemHash;
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
-  bucket = HASH_LOOKUP(H, itemHash);
+  bucket = &HASH_LOOKUP(H, itemHash);
   for (e = *bucket; e; p = e, e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       goto delete;
@@ -258,7 +258,7 @@ int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
     if (tbl == NULL) return H_NOMEM;
   }
   for (i = 0; i < H->cap; i++) {
-    Elt *e = *HASH_BUCKET(H, i);
+    Elt *e = HASH_BUCKET(H, i);
     int n = 0;
     for ( ; e; e = e->next) n++;
     tbl[t++] = n;
