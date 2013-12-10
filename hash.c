@@ -223,10 +223,10 @@ int hashset_del (HashSet *H, const char *item) {
   bucket = HASH_LOOKUP(H, itemHash);
   for (e = *bucket; e != NULL; p = e, e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
-      goto _del_;
+      goto delete;
   }
   return H_NOTFOUND;
-_del_:
+delete:
   if (H->destroyFunc == HASH_INTERN)
     HASH_INTERN_FREE(e->key);
   else if (H->destroyFunc)
