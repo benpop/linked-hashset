@@ -247,9 +247,9 @@ int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
   hash_t i, t = 0;
   if (H == NULL || pSize == NULL || pTbl == NULL)
     return H_INVALID;
-  if (H->numBuckets == 0) { *pSize = 0; return H_OK; }
-  if (*pSize < H->numBuckets) {
-    tbl = malloc(H->numBuckets * sizeof *tbl);
+  /* if (H->cap == 0) { *pSize = 0; return H_OK; } */
+  if (*pSize < H->cap) {
+    tbl = malloc(H->cap * sizeof *tbl);
     if (tbl == NULL) return H_NOMEM;
   }
   for (i = 0; i < H->cap; i++) {
@@ -258,7 +258,7 @@ int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
     for ( ; e; e = e->next) n++;
     tbl[t++] = n;
   }
-  *pSize = H->numBuckets;
+  *pSize = H->cap;
   *pTbl = tbl;
   return H_OK;
 }
