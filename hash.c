@@ -108,7 +108,7 @@ HashSet *hashset_new (
   H->cap = INIT_CAP;
   H->numElts = 0;
   H->numBuckets = 0;
-  H->hashFunc = hashFunc != NULL ? hashFunc : hash_jenkins;
+  H->hashFunc = hashFunc ? hashFunc : hash_jenkins;
   H->equalFunc = equalFunc;
   H->destroyFunc = destroyFunc;
   H->ud = ud;
@@ -116,13 +116,13 @@ HashSet *hashset_new (
 }
 
 void hashset_destroy (HashSet *H) {
-  if (H != NULL) {
+  if (H) {
     hash_t i;
     for (i = 0; i < H->cap; i++) {
       Elt *p = NULL;  /* parent */
       Elt *e = *HASH_BUCKET(H, i);
-      for ( ; e != NULL; p = e, e = e->next) {
-        if (H->destroyFunc != NULL) {
+      for ( ; e; p = e, e = e->next) {
+        if (H->destroyFunc) {
           if (H->destroyFunc == HASH_INTERN)
             HASH_INTERN_FREE(e->key);
           else
@@ -139,11 +139,11 @@ void hashset_destroy (HashSet *H) {
 void hashset_values (HashSet *H,
     HashFunc *pHashFunc, EqualFunc *pEqualFunc,
     DestroyFunc *pDestroyFunc, void **pUd) {
-  if (H != NULL) {
-    if (pHashFunc != NULL) *pHashFunc = H->hashFunc;
-    if (pEqualFunc != NULL) *pEqualFunc = H->equalFunc;
-    if (pDestroyFunc != NULL) *pDestroyFunc = H->destroyFunc;
-    if (pUd != NULL) *pUd = H->ud;
+  if (H) {
+    if (pHashFunc) *pHashFunc = H->hashFunc;
+    if (pEqualFunc) *pEqualFunc = H->equalFunc;
+    if (pDestroyFunc) *pDestroyFunc = H->destroyFunc;
+    if (pUd) *pUd = H->ud;
   }
 }
 
@@ -187,13 +187,13 @@ int hashset_add (HashSet *H, const char *item) {
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
   bucket = HASH_LOOKUP(H, itemHash);
-  for (e = *bucket; e != NULL; e = e->next) {
+  for (e = *bucket; e; e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       return H_EXISTS;
   }
   /* item not found, insert at head of bucket list */
   e = elt_new(H, item, itemHash, *bucket);
-  if (e != NULL) {
+  if (e) {
     if (*bucket == NULL) H->numBuckets++;
     H->numElts++;
     *bucket = e;
@@ -208,7 +208,7 @@ int hashset_test (HashSet *H, const char *item) {
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
   e = *HASH_LOOKUP(H, itemHash);
-  for ( ; e != NULL; e = e->next) {
+  for ( ; e; e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       return H_OK;
   }
@@ -221,7 +221,7 @@ int hashset_del (HashSet *H, const char *item) {
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
   bucket = HASH_LOOKUP(H, itemHash);
-  for (e = *bucket; e != NULL; p = e, e = e->next) {
+  for (e = *bucket; e; p = e, e = e->next) {
     if (itemHash == e->hash && items_equal(H, item, e->key))
       goto delete;
   }
@@ -232,7 +232,7 @@ delete:
   else if (H->destroyFunc)
     H->destroyFunc(e->key, H->ud);
   /* unlink element */
-  if (p != NULL) p->next = e->next;
+  if (p) p->next = e->next;
   else *bucket = e->next;
   free(e);
   if (*bucket == NULL) H->numBuckets--;
