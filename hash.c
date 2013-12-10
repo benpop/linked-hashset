@@ -193,9 +193,13 @@ int hashset_add (HashSet *H, const char *item) {
   }
   /* item not found, insert at head of bucket list */
   e = elt_new(H, item, itemHash, *bucket);
-  if (e != NULL) *bucket = e;
+  if (e != NULL) {
+    if (*bucket == NULL) H->numBuckets++;
+    H->numElts++;
+    *bucket = e;
+    return H_OK;
+  }
   else return H_NOMEM;
-  return H_OK;
 }
 
 int hashset_test (HashSet *H, const char *item) {
@@ -231,6 +235,8 @@ _del_:
   if (p != NULL) p->next = e->next;
   else *bucket = e->next;
   free(e);
+  if (*bucket == NULL) H->numBuckets--;
+  H->numElts--;
   return H_OK;
 }
 
