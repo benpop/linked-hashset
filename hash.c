@@ -250,7 +250,7 @@ double hashset_avgprobedist (HashSet *H) {
 
 int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
   int *tbl;
-  hash_t i, t = 0;
+  hash_t i;
   if (H == NULL || pSize == NULL || pTbl == NULL)
     return H_INVALID;
   if (*pSize < H->cap) {
@@ -261,7 +261,7 @@ int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
     Elt *e = HASH_GET(H, i);
     int n = 0;
     for ( ; e; e = e->next) n++;
-    tbl[t++] = n;
+    tbl[i] = n;
   }
   *pSize = H->cap;
   *pTbl = tbl;
