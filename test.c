@@ -46,7 +46,7 @@ int main (void) {
     }
     if (xrc == H_OK) fprintf(stderr, "ok.\n");
   }
-cleanup:
+/* cleanup: */
   hashset_destroy(H);
   return 0;
 }
