@@ -234,3 +234,32 @@ _del_:
   return H_OK;
 }
 
+double hashset_loadfactor (HashSet *H) {
+  return H ? (double)H->numElts / H->cap : -1.0;
+}
+
+double hashset_avgprobedist (HashSet *H) {
+  return H ? (double)H->numElts / H->numBuckets : -1.0;
+}
+
+int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
+  int *tbl;
+  hash_t i, t = 0;
+  if (H == NULL || pSize == NULL || pTbl == NULL)
+    return H_INVALID;
+  if (H->numBuckets == 0) { *pSize = 0; return H_OK; }
+  if (*pSize < H->numBuckets) {
+    tbl = malloc(H->numBuckets * sizeof *tbl);
+    if (tbl == NULL) return H_NOMEM;
+  }
+  for (i = 0; i < H->cap; i++) {
+    Elt *e = *HASH_BUCKET(H, i);
+    int n = 0;
+    for ( ; e; e = e->next) n++;
+    tbl[t++] = n;
+  }
+  *pSize = H->numBuckets;
+  *pTbl = tbl;
+  return H_OK;
+}
+

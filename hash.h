@@ -61,4 +61,10 @@ int hashset_del (HashSet*, const char *item);
 
 const char *hashset_strcode (int returnCode, int longMsg);
 
+double hashset_loadfactor (HashSet *H);
+
+double hashset_avgprobedist (HashSet *H);
+
+int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl);
+
 #endif
