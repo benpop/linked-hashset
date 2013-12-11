@@ -15,6 +15,9 @@
 #define HASH_GET(tab,idx) ((tab)->buckets[(idx)])
 #define HASH_LOOKUP(tab,hash) HASH_GET((tab),HASH_MOD((tab),(hash)))
 
+#define HASH_LOADFACTOR(tab) ((double)(tab)->numElts / (tab)->cap)
+#define HASH_AVGPROBEDIST(tab) ((double)(tab)->numElts / (tab)->numBuckets)
+
 #define HASH_INTERN_FREE(ptr) free((void *)(ptr))
 
 typedef struct Elt {
@@ -241,11 +244,11 @@ delete:
 }
 
 double hashset_loadfactor (HashSet *H) {
-  return H ? (double)H->numElts / H->cap : -1.0;
+  return H ? HASH_LOADFACTOR(H) : -1.0;
 }
 
 double hashset_avgprobedist (HashSet *H) {
-  return H ? (double)H->numElts / H->numBuckets : -1.0;
+  return H ? HASH_AVGPROBEDIST(H) : -1.0;
 }
 
 int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
