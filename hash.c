@@ -184,9 +184,51 @@ static Elt *elt_new (HashSet *H, const char *item, hash_t hash, Elt *next) {
   return e;
 }
 
-static int add_only (HashSet *H, const char *item) {
+static int rehash (HashSet *H) {
+  Elt **oldBuckets = H->buckets;
+  hash_t newNumBuckets = 0;
+  hash_t oldCap = H->cap;
+  hash_t i;
+  int rc;
+  H->cap <<= 1;  /* next power of 2 */
+  if (H->cap <= oldCap) {  /* size overflow */
+    rc = H_TOOBIG;
+    goto cleanup;
+  }
+  H->buckets = calloc(H->cap, sizeof *H->buckets);
+  if (H->buckets == NULL) {  /* out of memory */
+    rc = H_NOMEM;
+    goto cleanup;
+  }
+  for (i = 0; i < oldCap; i++) {  /* rehash elements */
+    Elt *e = oldBuckets[i];
+    while (e) {
+      /* XXX: current implementation places elements in reverse order */
+      Elt **bucket = &HASH_LOOKUP(H, e->hash);
+      Elt *next = e->next;
+      if (*bucket == NULL) newNumBuckets++;
+      e->next = *bucket;
+      *bucket = e;
+      e = next;
+    }
+  }
+  H->numBuckets = newNumBuckets;
+  free(oldBuckets);
+  return H_OK;
+cleanup:
+  H->cap = oldCap;
+  H->buckets = oldBuckets;
+  return rc;
+}
+
+int hashset_add (HashSet *H, const char *item) {
   Elt **bucket, *e;
   hash_t itemHash;
+  if (H == NULL || item == NULL) return H_INVALID;
+  if (HASH_LOADFACTOR(H) >= MAX_LOAD_PERCENT) {
+    int rc = rehash(H);
+    if (rc != H_OK) return rc;
+  }
   itemHash = H->hashFunc(item, H->ud);
   bucket = &HASH_LOOKUP(H, itemHash);
   for (e = *bucket; e; e = e->next) {
@@ -202,19 +244,6 @@ static int add_only (HashSet *H, const char *item) {
     return H_OK;
   }
   else return H_NOMEM;
-}
-
-static int rehash (HashSet *H) {
-  // TODO
-}
-
-int hashset_add (HashSet *H, const char *item) {
-  if (H == NULL || item == NULL) return H_INVALID;
-  if (HASH_LOADFACTOR(H) >= MAX_LOAD_PERCENT) {
-    int rc = rehash(H);
-    if (rc != H_OK) return rc;
-  }
-  return add_only(H, item);
 }
 
 int hashset_test (HashSet *H, const char *item) {
