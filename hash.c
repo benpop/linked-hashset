@@ -184,10 +184,9 @@ static Elt *elt_new (HashSet *H, const char *item, hash_t hash, Elt *next) {
   return e;
 }
 
-int hashset_add (HashSet *H, const char *item) {
+static int add_only (HashSet *H, const char *item) {
   Elt **bucket, *e;
   hash_t itemHash;
-  if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
   bucket = &HASH_LOOKUP(H, itemHash);
   for (e = *bucket; e; e = e->next) {
@@ -203,6 +202,19 @@ int hashset_add (HashSet *H, const char *item) {
     return H_OK;
   }
   else return H_NOMEM;
+}
+
+static int rehash (HashSet *H) {
+  // TODO
+}
+
+int hashset_add (HashSet *H, const char *item) {
+  if (H == NULL || item == NULL) return H_INVALID;
+  if (HASH_LOADFACTOR(H) >= MAX_LOAD_PERCENT) {
+    int rc = rehash(H);
+    if (rc != H_OK) return rc;
+  }
+  return add_only(H, item);
 }
 
 int hashset_test (HashSet *H, const char *item) {
