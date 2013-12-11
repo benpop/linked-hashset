@@ -36,6 +36,7 @@ enum HReturnCodes {
   H_ABORT,
   H_INVALID,
   H_NOMEM,
+  H_TOOBIG,
   NRETURNCODES
 };
 
