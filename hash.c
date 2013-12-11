@@ -5,7 +5,7 @@
 
 #define INIT_CAP 8
 
-#define MAX_LOAD_PERCENT 75
+#define MAX_LOAD_PERCENT 0.75
 
 #define FNV_OFFSET_BASIS  2166136261UL
 #define FNV_PRIME         16777619UL
