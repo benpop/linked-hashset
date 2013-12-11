@@ -4,6 +4,7 @@ RANLIB = ranlib
 RM = rm -f
 
 CFLAGS = -Wall -Wextra -ansi -pedantic -DHAVE_STRDUP
+LFLAGS = -Wall -Wextra
 
 N = hash
 C = $N.c
@@ -13,15 +14,15 @@ A = lib$N.a
 
 all: $A
 
-test: test.c $A
-	$(CC) $(CFLAGS) -o $@ $< -I. -L. -l$N
+test: test.o $A
+	$(CC) $(LFLAGS) -o $@ $< -L. -l$N
 
 clean:
-	$(RM) $O $A
+	$(RM) *.o $A test
 
 lib%.a: %.o
 	$(AR) $@ $<
 	$(RANLIB) $@
 
-%.o: %.c %.h
-	$(CC) $(CFLAGS) -c -o $@ $<
+%.o: %.c $H
+	$(CC) $(CFLAGS) -c $<
