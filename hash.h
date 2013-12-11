@@ -55,17 +55,12 @@ void hashset_values (HashSet*,
     DestroyFunc *pDestroyFunc, void **pUd);
 
 int hashset_add (HashSet*, const char *item);
-
 int hashset_test (HashSet*, const char *item);
-
 int hashset_del (HashSet*, const char *item);
 
 const char *hashset_strcode (int returnCode, int longMsg);
-
 double hashset_loadfactor (HashSet*);
-
 double hashset_avgprobedist (HashSet*);
-
 int hashset_tblprobedist (HashSet*, hash_t *pSize, int **pTbl);
 
 #endif
