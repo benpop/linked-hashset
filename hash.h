@@ -31,7 +31,7 @@ enum HReturnCodes {
   H_OK = 0,
   H_NOTFOUND,
   H_EXISTS,
-  /* True errors always start with H_ERROR. */
+  /* True errors are always >= H_ERROR. */
   H_ERROR,
   H_ABORT,
   H_INVALID,
