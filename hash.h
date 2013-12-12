@@ -64,6 +64,7 @@ hash_t hashset_size (HashSet*);
 hash_t hashset_capacity (HashSet*);
 double hashset_loadfactor (HashSet*);
 double hashset_avgprobedist (HashSet*);
+int hashset_maxprobedist (HashSet*);
 int hashset_tblprobedist (HashSet*, hash_t *pSize, int **pTbl);
 
 #endif

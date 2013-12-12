@@ -319,6 +319,19 @@ double hashset_avgprobedist (HashSet *H) {
     ) : -1.0;
 }
 
+int hashset_maxprobedist (HashSet *H) {
+  hash_t i;
+  int maxpd = 0;
+  if (H == NULL) return -1;
+  for (i = 0; i < H->cap; i++) {
+    Elt *e = H->buckets[i];
+    int pd = 0;
+    for ( ; e; e = e->next) pd++;
+    if (pd > maxpd) maxpd = pd;
+  }
+  return maxpd;
+}
+
 int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
   int *tbl;
   hash_t i;
