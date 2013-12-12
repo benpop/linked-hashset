@@ -16,7 +16,6 @@
 #define HASH_LOOKUP(tab,hash) HASH_GET((tab),HASH_MOD((tab),(hash)))
 
 #define HASH_LOADFACTOR(tab) ((double)(tab)->numElts / (tab)->cap)
-#define HASH_AVGPROBEDIST(tab) ((double)(tab)->numElts / (tab)->numBuckets)
 
 #define HASH_INTERN_FREE(ptr) free((void *)(ptr))
 
@@ -289,7 +288,9 @@ double hashset_loadfactor (HashSet *H) {
 }
 
 double hashset_avgprobedist (HashSet *H) {
-  return H ? HASH_AVGPROBEDIST(H) : -1.0;
+  return H ? (
+      H->numBuckets > 0 ? (double)H->numElts / H->numBuckets : 0.0
+    ) : -1.0;
 }
 
 int hashset_tblprobedist (HashSet *H, hash_t *pSize, int **pTbl) {
