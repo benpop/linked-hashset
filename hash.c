@@ -100,6 +100,24 @@ hash_t hash_fnv1a (const char *key, void *ud) {
   return hash;
 }
 
+/*
+http://hughewilliams.com/2012/10/01/five-myths-about-hash-tables/
+http://www.seg.rmit.edu.au/code/zwh-ipl/bitwisehash.c
+*/
+/* Author J. Zobel, April 2001.
+   Permission to use this code is freely granted, provided that this
+   statement is retained. */
+/* Bitwise hash function.  Note that tsize does not have to be prime. */
+hash_t hash_zobel (const char *key, void *ud) {
+  size_t i;
+  hash_t hash = FNV_OFFSET_BASIS;
+  (void)ud;
+  for (i = 0; key[i] != '\0'; i++) {
+    hash ^= (hash << 5) + key[i] + (hash >> 2);
+  }
+  return hash;
+}
+
 HashSet *hashset_new (
     HashFunc hashFunc, EqualFunc equalFunc,
     DestroyFunc destroyFunc, void *ud) {

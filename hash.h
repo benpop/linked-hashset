@@ -43,6 +43,7 @@ enum HReturnCodes {
 hash_t hash_jenkins (const char *key, void *ud);
 hash_t hash_fnv1    (const char *key, void *ud);
 hash_t hash_fnv1a   (const char *key, void *ud);
+hash_t hash_zobel   (const char *key, void *ud);
 
 HashSet *hashset_new (
     HashFunc hashFunc, EqualFunc equalFunc,
