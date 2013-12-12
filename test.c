@@ -86,6 +86,10 @@ int main (int argc, char **argv) {
           fprintf(stderr, "average probe distance: "FLTFMT"\n",
             hashset_avgprobedist(H));
           break;
+        case 'm':
+          fprintf(stderr, "maximum probe distance: %d\n",
+            hashset_maxprobedist(H));
+          break;
         case 'P': {
           int *tbl;
           hash_t i, size = 0;
