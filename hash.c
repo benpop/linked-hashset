@@ -260,7 +260,7 @@ int hashset_test (HashSet *H, const char *item) {
 }
 
 int hashset_del (HashSet *H, const char *item) {
-  Elt **bucket, *e, *p;
+  Elt **bucket, *e, *p = NULL;
   hash_t itemHash;
   if (H == NULL || item == NULL) return H_INVALID;
   itemHash = H->hashFunc(item, H->ud);
