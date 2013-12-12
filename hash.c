@@ -39,13 +39,13 @@ struct HashSet {
 
 static const char * const HCodeShortMsgs[] = {
   "ok", "not found", "exists", "error", "abort",
-  "invalid", "out of memory",
+  "invalid", "out of memory", "too big",
   NULL
 };
 
 static const char * const HCodeLongMsgs[] = {
   "ok", "item not found", "item exists", "error", "aborted by caller",
-  "invalid argument(s)", "out of memory",
+  "invalid argument(s)", "out of memory", "cannot grow table",
   NULL
 };
 
