@@ -162,7 +162,7 @@ static char *strdup (const char *src) {
 static int items_equal (HashSet *H, const char *a, const char *b) {
   if (a == b) return 1;  /* pointer equality */
   else if (H->equalFunc) return H->equalFunc(a, b, H->ud);
-  else return strcmp(a, b);
+  else return strcmp(a, b) == 0;
 }
 
 static Elt *elt_new (HashSet *H, const char *item, hash_t hash, Elt *next) {
