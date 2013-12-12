@@ -26,7 +26,6 @@ INTERN: Duplicate strings added and hold them internally.
 */
 #define HASH_STATIC ((DestroyFunc)0)
 #define HASH_INTERN ((DestroyFunc)-1)
-/*#define HASH_NOCASE ((EqualFunc)-1)*/
 
 enum HReturnCodes {
   H_OK = 0,
