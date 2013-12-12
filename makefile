@@ -18,7 +18,7 @@ test: test.o $A
 	$(CC) $(LFLAGS) -o $@ $< -L. -l$N
 
 clean:
-	$(RM) *.o $A test test.out
+	$(RM) *.o *.a test test.out
 
 lib%.a: %.o
 	$(AR) $@ $<
