@@ -283,6 +283,14 @@ delete:
   return H_OK;
 }
 
+hash_t hashset_size (HashSet *H) {
+  return H ? H->numElts : 0;
+}
+
+hash_t hashset_capacity (HashSet *H) {
+  return H ? H->cap : 0;
+}
+
 double hashset_loadfactor (HashSet *H) {
   return H ? HASH_LOADFACTOR(H) : -1.0;
 }
